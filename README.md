@@ -31,13 +31,12 @@ To run this task locally, follow these steps:
 1. **Clone the repository:**
 
    ```bash
-   git clone <repository_url>
-   cd <task_directory>
+   git clone https://github.com/Amanwaikar13/GeeksforGeeks-CodingChallenge
+   cd GeeksforGeeks-CodingChallenge
    
 2. **Install dependencies:**
 
     ```bash
-    Copy code
     cd backend
     npm install
 
@@ -48,19 +47,9 @@ To run this task locally, follow these steps:
 
 **Create a .env file in the backend directory and define the following variables:**
 
-env
-Copy code
-PORT=5000
-MONGODB_URI=<your_mongodb_uri>
-Run the backend server:
-
-    ```bash
-        cd backend
-        npm start
-        Run the frontend development server:
-  
-        cd frontend
-        npm start
+               PORT=5000
+               MONGODB_URI=<your_mongodb_uri>
+               Run the backend server:
         
         
 **Access the application:**
