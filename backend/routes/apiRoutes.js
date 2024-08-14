@@ -13,22 +13,40 @@ router.get('/transactions', async (req, res) => {
     try {
         const { search = '', page = 1, perPage = 6 } = req.query;
 
-        const searchQuery = search ? {
-            $or: [
-                { title: new RegExp(search, 'i') },
-                { description: new RegExp(search, 'i') },
-                { price: { $regex: new RegExp(search, 'i') } }
-            ]
-        } : {};
+        console.log('Search term:', search);
+
+        let searchQuery = {};
+
+        if (search) {
+            if (!isNaN(searchNumber)) {
+                searchQuery = {
+                    $or: [
+                        { title: new RegExp(search, 'i') },
+                        { description: new RegExp(search, 'i') },
+                        { price: searchNumber } 
+                    ]
+                };
+            } else {
+                searchQuery = {
+                    $or: [
+                        { title: new RegExp(search, 'i') },
+                        { description: new RegExp(search, 'i') }
+                    ]
+                };
+            }
+        }
+
+        console.log('Search Query:', JSON.stringify(searchQuery));
 
         const pageNumber = parseInt(page, 10);
         const perPageNumber = parseInt(perPage, 10);
 
         const totalDocuments = await Transaction.countDocuments(searchQuery);
-
         const transactions = await Transaction.find(searchQuery)
             .skip((pageNumber - 1) * perPageNumber)
             .limit(perPageNumber);
+
+        console.log('Transactions found:', transactions.length);
 
         res.status(200).json({
             transactions,
@@ -41,6 +59,7 @@ router.get('/transactions', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 router.get('/statistics', async (req, res) => {
     try {
@@ -67,16 +86,18 @@ router.get('/statistics', async (req, res) => {
         const totalSoldItems = filteredTransactions.filter(transaction => transaction.sold).length;
         const totalNotSoldItems = filteredTransactions.filter(transaction => !transaction.sold).length;
 
-
         res.status(200).json({
             totalSaleAmount,
             totalSoldItems,
-            totalNotSoldItems
+            totalNotSoldItems,
+            totalTransactions: filteredTransactions.length
         });
+
     } catch (error) {
         console.error('Error fetching statistics:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 module.exports = router;
